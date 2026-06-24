@@ -8,7 +8,22 @@ form.addEventListener('submit', function (e) {
   if (!text) return;
 
   const li = document.createElement('li');
-  li.textContent = text;
+
+  const span = document.createElement('span');
+  span.textContent = text;
+  span.addEventListener('click', function () {
+    li.classList.toggle('completed');
+  });
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = '削除';
+  deleteBtn.className = 'delete-btn';
+  deleteBtn.addEventListener('click', function () {
+    list.removeChild(li);
+  });
+
+  li.appendChild(span);
+  li.appendChild(deleteBtn);
   list.appendChild(li);
 
   input.value = '';

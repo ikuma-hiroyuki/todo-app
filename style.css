@@ -66,4 +66,29 @@ li {
   margin-bottom: 0.5rem;
   font-size: 1rem;
   color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+li span {
+  cursor: pointer;
+  flex: 1;
+}
+
+li.completed span {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.delete-btn {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  background: #e25555;
+  margin-left: 0.8rem;
+  flex-shrink: 0;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
 }
