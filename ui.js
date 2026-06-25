@@ -1,9 +1,23 @@
 // ========== Issue #3 専用ゾーン ==========
 function createDueDateElement(todo) {
-  return null;
+  if (!todo.dueDate) return null;
+
+  const span = document.createElement('span');
+  span.className = 'due-date';
+
+  const [y, m, d] = todo.dueDate.split('-');
+  span.textContent = `📅 ${y}/${m}/${d}`;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(`${todo.dueDate}T00:00:00`);
+  if (due < today) span.classList.add('overdue');
+
+  return span;
 }
 function getFormDueDate() {
-  return null;
+  const value = document.getElementById('todo-due').value;
+  return value === '' ? null : value;
 }
 
 // ========== Issue #4 専用ゾーン ==========
