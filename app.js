@@ -5,6 +5,11 @@ const list = document.getElementById('todo-list');
 
 const STORAGE_KEY = 'todos';
 
+function updateOverdue(dateInput) {
+  const today = new Date().toISOString().slice(0, 10);
+  dateInput.classList.toggle('overdue', !!dateInput.value && dateInput.value < today);
+}
+
 function loadTodos() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 }
@@ -13,7 +18,7 @@ function saveTodos() {
   const todos = Array.from(list.querySelectorAll('li')).map(li => ({
     text: li.querySelector('span.todo-text').textContent,
     completed: li.classList.contains('completed'),
-    dueDate: li.dataset.dueDate || '',
+    dueDate: li.querySelector('.due-date-input').value || '',
   }));
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
 }
@@ -21,7 +26,6 @@ function saveTodos() {
 function addTodoItem(text, completed = false, dueDate = '') {
   const li = document.createElement('li');
   if (completed) li.classList.add('completed');
-  if (dueDate) li.dataset.dueDate = dueDate;
 
   const span = document.createElement('span');
   span.className = 'todo-text';
@@ -33,13 +37,18 @@ function addTodoItem(text, completed = false, dueDate = '') {
 
   li.appendChild(span);
 
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+  dateInput.className = 'due-date-input';
   if (dueDate) {
-    const today = new Date().toISOString().slice(0, 10);
-    const dueDateSpan = document.createElement('span');
-    dueDateSpan.className = 'due-date' + (dueDate < today ? ' overdue' : '');
-    dueDateSpan.textContent = dueDate;
-    li.appendChild(dueDateSpan);
+    dateInput.value = dueDate;
+    updateOverdue(dateInput);
   }
+  dateInput.addEventListener('change', function () {
+    updateOverdue(dateInput);
+    saveTodos();
+  });
+  li.appendChild(dateInput);
 
   const deleteBtn = document.createElement('button');
   deleteBtn.textContent = '削除';

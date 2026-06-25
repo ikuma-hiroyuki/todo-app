@@ -94,14 +94,26 @@ li.completed span {
   background: #c0392b;
 }
 
-.due-date {
+.due-date-input {
+  flex: 0;
   font-size: 0.8rem;
   color: #888;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 0.15rem 0.3rem;
   margin-left: 0.5rem;
-  flex-shrink: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
-.due-date.overdue {
+.due-date-input:hover,
+.due-date-input:focus {
+  border-color: #ccc;
+  background: #fff;
+  outline: none;
+}
+
+.due-date-input.overdue {
   color: #e25555;
   font-weight: bold;
 }
