@@ -30,3 +30,16 @@ function loadSections() {
 function saveSections(sections) {
   localStorage.setItem(SECTIONS_KEY, JSON.stringify(sections));
 }
+
+function addSection(name) {
+  const sections = loadSections();
+  const section = { id: generateId(), name };
+  sections.push(section);
+  saveSections(sections);
+  return section;
+}
+
+function deleteSection(id) {
+  saveSections(loadSections().filter(s => s.id !== id));
+  saveTodos(loadTodos().map(t => t.sectionId === id ? { ...t, sectionId: null } : t));
+}
