@@ -5,16 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TODOアプリ</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style-due.css">
+  <link rel="stylesheet" href="style-memo.css">
+  <link rel="stylesheet" href="kanban.css">
 </head>
 <body>
   <div class="container">
     <h1>TODO</h1>
+    <div id="view-toggle-zone"></div>
     <form id="todo-form">
       <input id="todo-input" type="text" placeholder="タスクを入力..." autocomplete="off">
+      <input id="todo-due" type="date">
+      <textarea id="todo-memo" placeholder="メモ（省略可）" rows="2"></textarea>
       <button type="submit">追加</button>
     </form>
+    <div id="section-controls"></div>
     <ul id="todo-list"></ul>
+    <div id="kanban-board" hidden></div>
   </div>
-  <script src="app.js"></script>
+  <script src="data.js"></script>
+  <script src="ui.js"></script>
+  <script src="kanban.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
