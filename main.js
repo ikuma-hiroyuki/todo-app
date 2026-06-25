@@ -24,7 +24,7 @@ form.addEventListener('submit', function (e) {
   e.preventDefault();
   const text = input.value.trim();
   if (!text) return;
-  const newTodo = { ...DEFAULT_TODO, id: generateId(), text };
+  const newTodo = { ...DEFAULT_TODO, id: generateId(), text, dueDate: getFormDueDate(), memo: getFormMemo() };
   todos.push(newTodo);
   saveTodos(todos);
   refresh();

@@ -2,10 +2,16 @@
 function createDueDateElement(todo) {
   return null;
 }
+function getFormDueDate() {
+  return null;
+}
 
 // ========== Issue #4 専用ゾーン ==========
 function createMemoElement(todo) {
   return null;
+}
+function getFormMemo() {
+  return '';
 }
 
 // ========== 共通（変更しない） ==========
