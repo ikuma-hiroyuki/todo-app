@@ -8,10 +8,14 @@ function getFormDueDate() {
 
 // ========== Issue #4 専用ゾーン ==========
 function createMemoElement(todo) {
-  return null;
+  if (!todo.memo) return null;
+  const p = document.createElement('p');
+  p.className = 'memo';
+  p.textContent = todo.memo;
+  return p;
 }
 function getFormMemo() {
-  return '';
+  return document.getElementById('todo-memo').value.trim();
 }
 
 // ========== 共通（変更しない） ==========
