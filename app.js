@@ -6,8 +6,9 @@ const list = document.getElementById('todo-list');
 const STORAGE_KEY = 'todos';
 
 function updateOverdue(dateInput) {
-  const today = new Date().toISOString().slice(0, 10);
-  dateInput.classList.toggle('overdue', !!dateInput.value && dateInput.value < today);
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  dateInput.classList.toggle('overdue', !!dateInput.value && dateInput.value <= today);
 }
 
 function loadTodos() {
