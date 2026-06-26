@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## ルール
 
-- **変更を加えるときは必ずブランチを作成すること。**
+- **変更内容、ファイルの種類にかかわらず、変更を加えるときは必ずブランチを作成すること。**
 - **機能変更・追加は、テストを先に作成してからコードを実装すること（TDD）。**
 
 ## コマンド
