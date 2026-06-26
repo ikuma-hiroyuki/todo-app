@@ -63,21 +63,26 @@ li {
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 0.7rem 1rem;
   margin-bottom: 0.5rem;
   font-size: 1rem;
   color: #333;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
-li span {
+.todo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+}
+
+.todo-row span {
   cursor: pointer;
   flex: 1;
 }
 
-li.completed span {
+li.completed .todo-text {
   text-decoration: line-through;
   color: #aaa;
 }
@@ -116,4 +121,33 @@ li.completed span {
 .due-date-input.overdue {
   color: #e25555;
   font-weight: bold;
+}
+
+.memo-btn {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  background: #888;
+  margin-left: 0.4rem;
+  flex-shrink: 0;
+}
+
+.memo-btn:hover {
+  background: #666;
+}
+
+.memo-area {
+  padding: 0 1rem 0.6rem;
+  border-top: 1px solid #eee;
+}
+
+.memo-textarea {
+  width: 100%;
+  min-height: 60px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.4rem;
+  resize: vertical;
+  font-family: sans-serif;
+  color: #555;
 }
