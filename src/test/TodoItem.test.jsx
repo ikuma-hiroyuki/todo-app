@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import TodoItem from '../components/TodoItem'
 
@@ -7,18 +7,27 @@ const makeTodo = (overrides = {}) => ({
   text: 'テストタスク',
   completed: false,
   dueDate: '',
+  memo: '',
+  ...overrides,
+})
+
+const defaultProps = (overrides = {}) => ({
+  onToggle: vi.fn(),
+  onDelete: vi.fn(),
+  onUpdateDueDate: vi.fn(),
+  onUpdateMemo: vi.fn(),
   ...overrides,
 })
 
 describe('TodoItem', () => {
   it('タスクのテキストを表示する', () => {
-    render(<TodoItem todo={makeTodo()} onToggle={vi.fn()} onDelete={vi.fn()} onUpdateDueDate={vi.fn()} />)
+    render(<TodoItem todo={makeTodo()} {...defaultProps()} />)
     expect(screen.getByText('テストタスク')).toBeInTheDocument()
   })
 
   it('テキストをクリックすると onToggle が呼ばれる', async () => {
     const onToggle = vi.fn()
-    render(<TodoItem todo={makeTodo()} onToggle={onToggle} onDelete={vi.fn()} onUpdateDueDate={vi.fn()} />)
+    render(<TodoItem todo={makeTodo()} {...defaultProps({ onToggle })} />)
 
     await userEvent.click(screen.getByText('テストタスク'))
 
@@ -27,7 +36,7 @@ describe('TodoItem', () => {
 
   it('削除ボタンをクリックすると onDelete が呼ばれる', async () => {
     const onDelete = vi.fn()
-    render(<TodoItem todo={makeTodo()} onToggle={vi.fn()} onDelete={onDelete} onUpdateDueDate={vi.fn()} />)
+    render(<TodoItem todo={makeTodo()} {...defaultProps({ onDelete })} />)
 
     await userEvent.click(screen.getByRole('button', { name: '削除' }))
 
@@ -35,20 +44,20 @@ describe('TodoItem', () => {
   })
 
   it('完了済みタスクはテキストに line-through が付く', () => {
-    render(<TodoItem todo={makeTodo({ completed: true })} onToggle={vi.fn()} onDelete={vi.fn()} onUpdateDueDate={vi.fn()} />)
+    render(<TodoItem todo={makeTodo({ completed: true })} {...defaultProps()} />)
 
     expect(screen.getByText('テストタスク')).toHaveClass('line-through')
   })
 
   it('未完了タスクは line-through が付かない', () => {
-    render(<TodoItem todo={makeTodo({ completed: false })} onToggle={vi.fn()} onDelete={vi.fn()} onUpdateDueDate={vi.fn()} />)
+    render(<TodoItem todo={makeTodo({ completed: false })} {...defaultProps()} />)
 
     expect(screen.getByText('テストタスク')).not.toHaveClass('line-through')
   })
 
   it('期日を変更すると onUpdateDueDate が呼ばれる', async () => {
     const onUpdateDueDate = vi.fn()
-    render(<TodoItem todo={makeTodo()} onToggle={vi.fn()} onDelete={vi.fn()} onUpdateDueDate={onUpdateDueDate} />)
+    render(<TodoItem todo={makeTodo()} {...defaultProps({ onUpdateDueDate })} />)
 
     await userEvent.type(screen.getByDisplayValue(''), '2026-12-31')
 
@@ -59,9 +68,7 @@ describe('TodoItem', () => {
     render(
       <TodoItem
         todo={makeTodo({ dueDate: '2000-01-01' })}
-        onToggle={vi.fn()}
-        onDelete={vi.fn()}
-        onUpdateDueDate={vi.fn()}
+        {...defaultProps()}
       />
     )
     const dateInput = screen.getByDisplayValue('2000-01-01')
@@ -72,12 +79,35 @@ describe('TodoItem', () => {
     render(
       <TodoItem
         todo={makeTodo({ completed: true, dueDate: '2000-01-01' })}
-        onToggle={vi.fn()}
-        onDelete={vi.fn()}
-        onUpdateDueDate={vi.fn()}
+        {...defaultProps()}
       />
     )
     const dateInput = screen.getByDisplayValue('2000-01-01')
     expect(dateInput).not.toHaveClass('text-red-500')
+  })
+
+  it('メモボタンをクリックするとメモ入力欄が表示される', async () => {
+    render(<TodoItem todo={makeTodo()} {...defaultProps()} />)
+
+    expect(screen.queryByRole('textbox', { name: 'メモ' })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'メモ' }))
+    expect(screen.getByRole('textbox', { name: 'メモ' })).toBeInTheDocument()
+  })
+
+  it('メモ入力欄を編集すると onUpdateMemo が呼ばれる', async () => {
+    const onUpdateMemo = vi.fn()
+    render(<TodoItem todo={makeTodo()} {...defaultProps({ onUpdateMemo })} />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'メモ' }))
+    fireEvent.change(screen.getByRole('textbox', { name: 'メモ' }), { target: { value: 'メモ内容' } })
+
+    expect(onUpdateMemo).toHaveBeenCalledWith(1, 'メモ内容')
+  })
+
+  it('メモが設定済みの場合、初期表示でメモ入力欄が展開されている', () => {
+    render(<TodoItem todo={makeTodo({ memo: '既存メモ' })} {...defaultProps()} />)
+
+    expect(screen.getByRole('textbox', { name: 'メモ' })).toBeInTheDocument()
+    expect(screen.getByDisplayValue('既存メモ')).toBeInTheDocument()
   })
 })

@@ -12,6 +12,7 @@ function loadTodos() {
     text: t.text,
     completed: t.completed ?? false,
     dueDate: t.dueDate || '',
+    memo: t.memo || '',
   }))
 }
 
@@ -23,7 +24,7 @@ export default function App() {
   }, [todos])
 
   function addTodo(text, dueDate) {
-    setTodos(prev => [...prev, { id: Date.now(), text, completed: false, dueDate }])
+    setTodos(prev => [...prev, { id: Date.now(), text, completed: false, dueDate, memo: '' }])
   }
 
   function toggleTodo(id) {
@@ -38,6 +39,10 @@ export default function App() {
     setTodos(prev => prev.map(t => t.id === id ? { ...t, dueDate } : t))
   }
 
+  function updateMemo(id, memo) {
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, memo } : t))
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-lg mx-auto">
@@ -48,6 +53,7 @@ export default function App() {
           onToggle={toggleTodo}
           onDelete={deleteTodo}
           onUpdateDueDate={updateDueDate}
+          onUpdateMemo={updateMemo}
         />
       </div>
     </div>
