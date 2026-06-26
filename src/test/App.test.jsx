@@ -97,4 +97,26 @@ describe('App', () => {
     const stored = JSON.parse(localStorage.getItem('todos'))
     expect(stored[0].dueDate).toBe('2027-06-30')
   })
+
+  it('タスクのメモを更新できる', async () => {
+    render(<App />)
+
+    await userEvent.type(screen.getByPlaceholderText('タスクを入力...'), 'メモタスク')
+    await userEvent.click(screen.getByRole('button', { name: '追加' }))
+    await userEvent.click(screen.getByRole('button', { name: 'メモ' }))
+    await userEvent.type(screen.getByRole('textbox', { name: 'メモ' }), '詳細メモ')
+
+    const stored = JSON.parse(localStorage.getItem('todos'))
+    expect(stored[0].memo).toBe('詳細メモ')
+  })
+
+  it('追加したタスクに memo フィールドが含まれる', async () => {
+    render(<App />)
+
+    await userEvent.type(screen.getByPlaceholderText('タスクを入力...'), 'メモなしタスク')
+    await userEvent.click(screen.getByRole('button', { name: '追加' }))
+
+    const stored = JSON.parse(localStorage.getItem('todos'))
+    expect(stored[0].memo).toBe('')
+  })
 })
