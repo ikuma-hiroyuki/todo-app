@@ -20,13 +20,17 @@ function saveTodos() {
     text: li.querySelector('span.todo-text').textContent,
     completed: li.classList.contains('completed'),
     dueDate: li.querySelector('.due-date-input').value || '',
+    memo: li.querySelector('.memo-area').value || '',
   }));
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
 }
 
-function addTodoItem(text, completed = false, dueDate = '') {
+function addTodoItem(text, completed = false, dueDate = '', memo = '') {
   const li = document.createElement('li');
   if (completed) li.classList.add('completed');
+
+  const mainRow = document.createElement('div');
+  mainRow.className = 'main-row';
 
   const span = document.createElement('span');
   span.className = 'todo-text';
@@ -36,7 +40,7 @@ function addTodoItem(text, completed = false, dueDate = '') {
     saveTodos();
   });
 
-  li.appendChild(span);
+  mainRow.appendChild(span);
 
   const dateInput = document.createElement('input');
   dateInput.type = 'date';
@@ -49,7 +53,29 @@ function addTodoItem(text, completed = false, dueDate = '') {
     updateOverdue(dateInput);
     saveTodos();
   });
-  li.appendChild(dateInput);
+  mainRow.appendChild(dateInput);
+
+  const memoBtn = document.createElement('button');
+  memoBtn.textContent = 'メモ';
+  memoBtn.className = 'memo-btn';
+
+  const memoArea = document.createElement('textarea');
+  memoArea.className = 'memo-area';
+  memoArea.placeholder = 'メモを入力...';
+  memoArea.value = memo;
+  if (memo) li.classList.add('has-memo');
+
+  memoBtn.addEventListener('click', function () {
+    li.classList.toggle('memo-open');
+    if (li.classList.contains('memo-open')) memoArea.focus();
+  });
+
+  memoArea.addEventListener('input', function () {
+    li.classList.toggle('has-memo', !!memoArea.value);
+    saveTodos();
+  });
+
+  mainRow.appendChild(memoBtn);
 
   const deleteBtn = document.createElement('button');
   deleteBtn.textContent = '削除';
@@ -59,11 +85,14 @@ function addTodoItem(text, completed = false, dueDate = '') {
     saveTodos();
   });
 
-  li.appendChild(deleteBtn);
+  mainRow.appendChild(deleteBtn);
+
+  li.appendChild(mainRow);
+  li.appendChild(memoArea);
   list.appendChild(li);
 }
 
-loadTodos().forEach(({ text, completed, dueDate }) => addTodoItem(text, completed, dueDate));
+loadTodos().forEach(({ text, completed, dueDate, memo }) => addTodoItem(text, completed, dueDate, memo));
 
 form.addEventListener('submit', function (e) {
   e.preventDefault();
