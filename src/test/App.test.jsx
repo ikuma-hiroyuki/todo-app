@@ -91,7 +91,7 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: '追加' }))
 
     // リスト内の date input に絞って取得（フォームの期日入力と区別）
-    const todoDateInput = within(screen.getByRole('list')).getByDisplayValue('')
+    const todoDateInput = within(screen.getByTestId('list-view')).getByDisplayValue('')
     fireEvent.change(todoDateInput, { target: { value: '2027-06-30' } })
 
     const stored = JSON.parse(localStorage.getItem('todos'))
@@ -118,5 +118,43 @@ describe('App', () => {
 
     const stored = JSON.parse(localStorage.getItem('todos'))
     expect(stored[0].memo).toBe('')
+  })
+
+  it('追加したタスクのsectionが"todo"になる', async () => {
+    render(<App />)
+
+    await userEvent.type(screen.getByPlaceholderText('タスクを入力...'), 'セクションタスク')
+    await userEvent.click(screen.getByRole('button', { name: '追加' }))
+
+    const stored = JSON.parse(localStorage.getItem('todos'))
+    expect(stored[0].section).toBe('todo')
+  })
+
+  it('リスト・カンバン切り替えボタンが表示される', () => {
+    render(<App />)
+
+    expect(screen.getByRole('button', { name: 'リスト' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'カンバン' })).toBeInTheDocument()
+  })
+
+  it('カンバンボタンをクリックするとカンバンビューに切り替わる', async () => {
+    render(<App />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'カンバン' }))
+
+    expect(screen.getByText('未着手')).toBeInTheDocument()
+    expect(screen.getByText('進行中')).toBeInTheDocument()
+    expect(screen.getByText('完了')).toBeInTheDocument()
+  })
+
+  it('旧フォーマットのcompleted:trueはsection:"done"に移行される', () => {
+    localStorage.setItem('todos', JSON.stringify([
+      { id: 1, text: '完了済みタスク', completed: true, dueDate: '' },
+    ]))
+
+    render(<App />)
+
+    const stored = JSON.parse(localStorage.getItem('todos'))
+    expect(stored[0].section).toBe('done')
   })
 })
